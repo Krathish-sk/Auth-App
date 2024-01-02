@@ -10,7 +10,7 @@ import {
 } from "@expo-google-fonts/labrada";
 
 import { LoginScreen, SignupScreen, WelcomeSecreen } from "./screens";
-import { COLORS } from "./constants/theme";
+import { COLORS, FONTSIZE } from "./constants/theme";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,11 +20,23 @@ const AuthStack = function () {
       initialRouteName="Login"
       screenOptions={{
         contentStyle: { backgroundColor: COLORS.primaryBlackHex },
-        headerStyle: { backgroundColor: COLORS.primaryGreyHex },
+        headerStyle: {
+          backgroundColor: COLORS.primaryGreyHex,
+        },
+        headerTitleStyle: {
+          fontFamily: "semiBold",
+          fontSize: FONTSIZE.size_20,
+        },
         headerTintColor: COLORS.primaryWhiteHex,
       }}
     >
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerTitle: "Login",
+        }}
+      />
       <Stack.Screen name="Signup" component={SignupScreen} />
     </Stack.Navigator>
   );
@@ -47,7 +59,7 @@ const AuthenticatedStack = function () {
 function Navigation() {
   return (
     <NavigationContainer>
-      <AuthenticatedStack />
+      <AuthStack />
     </NavigationContainer>
   );
 }
@@ -61,7 +73,9 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return <View style={{ backgroundColor: COLORS.primaryBlackHex }}></View>;
+    return (
+      <View style={{ backgroundColor: COLORS.primaryGreyHex, flex: 1 }}></View>
+    );
   }
 
   return (

@@ -6,12 +6,14 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import AuthForm from "./AuthForm";
 import { COLORS } from "../../constants/theme";
 import FlatButton from "../UI/FlatButton";
 
 export default function AuthContent({ isLogin, onAuthenticate }) {
+  const navigation = useNavigation();
   const [credentialInvalid, setCredentialInvalid] = useState({
     email: false,
     password: false,
@@ -19,7 +21,11 @@ export default function AuthContent({ isLogin, onAuthenticate }) {
     confirmPassword: false,
   });
 
-  function switchAuthModeHandler() {}
+  function switchAuthModeHandler() {
+    if (isLogin) {
+      navigation.replace("Signup");
+    } else navigation.replace("Login");
+  }
 
   function submitHandler(credentials) {
     let { email, confirmEmail, password, confirmPassword } = credentials;
