@@ -8,9 +8,12 @@ import {
   Labrada_600SemiBold,
   Labrada_700Bold,
 } from "@expo-google-fonts/labrada";
+import AuthContextProvider, { AuthContext } from "./store/auth-context";
 
+import IconButton from "./components/UI/IconButton";
 import { LoginScreen, SignupScreen, WelcomeSecreen } from "./screens";
 import { COLORS, FONTSIZE } from "./constants/theme";
+import { useContext } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +46,8 @@ const AuthStack = function () {
 };
 
 const AuthenticatedStack = function () {
+  const authCtx = useContext(AuthContext);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -51,15 +56,30 @@ const AuthenticatedStack = function () {
         contentStyle: { backgroundColor: COLORS.primaryBlackHex },
       }}
     >
-      <Stack.Screen name="Welcome" component={WelcomeSecreen} />
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeSecreen}
+        options={{
+          headerRight: ({ tintColor }) => (
+            <IconButton
+              icon="exit"
+              color={tintColor}
+              size={24}
+              onPress={authCtx.logout}
+            />
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 function Navigation() {
+  const authCtx = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      <AuthStack />
+      {authCtx.token ? <AuthenticatedStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }
@@ -79,12 +99,12 @@ export default function App() {
   }
 
   return (
-    <>
+    <AuthContextProvider>
       <StatusBar
         barStyle={"light-content"}
         backgroundColor={COLORS.primaryBlackHex}
       />
       <Navigation />
-    </>
+    </AuthContextProvider>
   );
 }
