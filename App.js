@@ -8,12 +8,13 @@ import {
   Labrada_600SemiBold,
   Labrada_700Bold,
 } from "@expo-google-fonts/labrada";
-import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AuthContextProvider, { AuthContext } from "./store/auth-context";
 import IconButton from "./components/UI/IconButton";
 import { LoginScreen, SignupScreen, WelcomeSecreen } from "./screens";
 import { COLORS, FONTSIZE } from "./constants/theme";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -84,6 +85,30 @@ function Navigation() {
   );
 }
 
+function Root() {
+  const [isLoading, setIsLoading] = useState(true);
+  const authCtx = useContext(AuthContext);
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        authCtx.authenticate(storedToken);
+      }
+      setIsLoading(false);
+    }
+    fetchToken();
+  }, []);
+  if (isLoading) {
+    return (
+      <View
+        style={{ backgroundColor: COLORS.primaryDarkGreyHex, flex: 1 }}
+      ></View>
+    );
+  }
+  return <Navigation />;
+}
+
 export default function App() {
   let [fontsLoaded] = useFonts({
     regular: Labrada_400Regular,
@@ -104,7 +129,7 @@ export default function App() {
         barStyle={"light-content"}
         backgroundColor={COLORS.primaryBlackHex}
       />
-      <Navigation />
+      <Root />
     </AuthContextProvider>
   );
 }
