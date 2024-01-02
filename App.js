@@ -47,7 +47,7 @@ const AuthenticatedStack = function () {
 function Navigation() {
   return (
     <NavigationContainer>
-      <AuthStack />
+      <AuthenticatedStack />
     </NavigationContainer>
   );
 }
